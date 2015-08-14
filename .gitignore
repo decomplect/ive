@@ -1,0 +1,8 @@
+*.iml
+*.log
+resources/public/js/compiled/*
+out/
+target/
+.idea/
+.nrepl*
+.repl*
