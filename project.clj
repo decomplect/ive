@@ -7,14 +7,16 @@
   :dependencies [[org.clojure/clojure "1.7.0"]
                  [org.clojure/clojurescript "1.7.107"]
                  [devcards "0.2.0-SNAPSHOT"]
+                 ;[ion/ergo "0.1.0-SNAPSHOT"]
                  [ion/poly "0.1.0-SNAPSHOT"]
                  [rm-hull/monet "0.2.1"]
+                 [rm-hull/turtle "0.1.8"]
                  [sablono "0.3.4"]
                  [thi.ng/geom "0.0.881"]
                  [thi.ng/math "0.1.4"]]
 
   :plugins [[lein-cljsbuild "1.0.5"]
-            [lein-figwheel "0.3.7"]]
+            [lein-figwheel "0.3.8-SNAPSHOT"]]
 
   :clean-targets ^{:protect false} ["resources/public/js/compiled"
                                     "target"]

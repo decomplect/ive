@@ -15,12 +15,12 @@
 
   This page will show how to work with geometry.")
 
-(defn slider [state k value min max f]
+(defn slider [state ks value min max f]
   (sab/html
     [:input {:type "range" :value value :min min :max max
              :style {:width "100%"}
              :on-change (fn [e]
-                          (swap! state assoc k (f (.-target.value e))))}]))
+                          (swap! state assoc-in ks (f (.-target.value e))))}]))
 
 (defn convert-radians->degrees [{:keys [radians] :as data}]
   (->> radians
@@ -34,7 +34,7 @@
        [:h3 "Degrees convertor"]
        [:div
         [:span (str "Radians: " radians)]
-        (slider state :radians radians 1 100 int)]
+        (slider state [:radians] radians 1 100 int)]
        [:div
         [:span (str "Degrees: " degrees)]]])))
 

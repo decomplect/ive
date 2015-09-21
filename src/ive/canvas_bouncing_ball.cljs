@@ -1,6 +1,5 @@
 (ns ive.canvas-bouncing-ball
   (:require
-    [goog.async.AnimationDelay]
     [goog.dom]
     [ion.poly.core :as poly]
     [monet.canvas :as canvas]
@@ -19,6 +18,13 @@
   (atom
     {:animation-frame-loop-alive? (atom false)
      :animation-frame-loop-active? (atom false)}))
+
+(defn slider [state ks min max f]
+  (sab/html
+    [:input {:type "range" :value (get-in @state ks) :min min :max max
+             :style {:width "100%"}
+             :on-change (fn [e]
+                          (swap! state assoc-in ks (f (.-target.value e))))}]))
 
 (defn radians
   "Returns the angle deg in radians."
@@ -115,12 +121,24 @@
         context (.getContext canvas "2d")]
     (swap! canvas-state assoc :ctx context)))
 
+(defn canvas-component [state]
+  (sab/html
+    [:div
+     [:h3 "Bouncing Ball Canvas"]
+     [:canvas {:id "canvas-1"
+               :width (get-in @state [:canvas :w])
+               :height (get-in @state [:canvas :h])}]
+     [:div [:button {:onClick toggle-animating!} "Start/Stop"]]
+     [:div
+      [:span (str "Ball Size: ")]
+      (slider state [:ball :size] 5 100 int)]
+     [:div
+      [:span (str "Ball Speed: ")]
+      (slider state [:ball :speed-pps] 1 200 int)]
+     ]))
+
 (defcard i-can-has-canvas?
-  (fn [state _]
-    (sab/html [:div [:canvas {:id "canvas-1"
-                              :width (get-in @state [:canvas :w])
-                              :height (get-in @state [:canvas :h])}]
-               [:div [:button {:onClick toggle-animating!} "Start/Stop"]]]))
+  (fn [state _] (canvas-component state))
   canvas-state
   {:inspect-data true})
 

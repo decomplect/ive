@@ -1,6 +1,7 @@
-(ns ive.template  ;; Be sure to change this namespace.
+(ns ive.ergo.development
   (:require
     [cljs.test :refer-macros [is testing]]
+    [ion.ergo.core :as ergo]
     [sablono.core :as sab :include-macros true])
   (:require-macros
     [devcards.core :as dc :refer [defcard deftest]]))
@@ -10,11 +11,18 @@
 (defcard
   "# Introduction
 
-  This is a good place to introduce the purpose for this set of cards.")
+  I'm developing the Ergo DSL.
+
+  I'm going to need:
+
+  * react canvas component
+  * render-agnostic library (`ion.ergo`)
+  * unit tests for `ion.ergo`
+  * rendering via `ion.ergo.rend` or `ion.rend`")
 
 (defonce app-state
   (atom
-    {:bar 42
+    {:degrees 0
      :foo? true}))
 
 (defn slider [state ks min max f]
@@ -33,7 +41,9 @@
 (defn state-inspection-component [state]
   (sab/html
     [:div
-     (div-span-slider "Bar Size" state [:bar] 1 100 int)
+     (div-span-slider "Degrees" state [:degrees] -360 360 int)
+     [:div
+      [:span (str "Radians: " (-> @state (get-in [:degrees]) (ergo/radians) (/ ergo/PI)) " PI")]]
      ]))
 
 (defcard state-inspection
@@ -42,25 +52,14 @@
   app-state
   {:inspect-data true})
 
-(defcard template-card
-  (sab/html
-    [:div
-     [:h1 "This is a basic template"]]))
-
-(deftest cljs-test-integration
-  "## Here are some example tests"
-  (testing "testing context 1"
-    (is (= (+ 3 4 55555) 4) "This is the message arg to an 'is' test")
-    (is (= (+ 1 0 0 0) 1) "This should work")
-    (is (= 1 3))
-    (is false)
-    (is (throw "errors get an extra red line on the side")))
+(deftest ergo-tests
+  "## Tests of the Ergo DSL"
+  (testing "Basic math and trigonometry functions."
+    (is (= 1 (Math/abs -1)) "Use standard JS Math functions where they exist.")
+    (is (= Math/PI ergo/PI) "Some useful constants are defined in ergo.")
+    (is (= 180 (ergo/degrees ergo/PI)) "Convert from radians to degrees.")
+    (is (= ergo/TWO-PI (ergo/radians 360)) "Convert from degrees to radians.")
+    )
   "Top level strings are interpreted as markdown for inline documentation."
   (testing "testing context 2"
-    (is (= (+ 1 0 0 0) 1))
-    (is (= (+ 3 4 55555) 4))
-    (is false)
-    (testing "nested context"
-      (is (= (+ 1 0 0 0) 1))
-      (is (= (+ 3 4 55555) 4))
-      (is false))))
+    (is false)))
